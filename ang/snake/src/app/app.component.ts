@@ -1,4 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit, HostListener } from '@angular/core';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+
+
 
 @Component({
   selector: 'app-root',
@@ -7,6 +10,10 @@ import { Component, ViewChild, ElementRef, OnInit, HostListener } from '@angular
 })
 export class AppComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
+  baseURL: string = "https://api.github.com/";
+
+  constructor(private http: HttpClient) {
+  }
   keyEvent(event: KeyboardEvent) {
     if(event.key == 'ArrowDown'){
       // Your row selection code
@@ -34,7 +41,7 @@ export class AppComponent implements OnInit {
 
 
   title = 'Snake Game';
-  score = 10;
+  score = 0;
   highscore = 100;
 
   grid = 16;
@@ -80,18 +87,22 @@ export class AppComponent implements OnInit {
 
   }
 
+  geths(){
+    return this.http.get<number>('http://localhost:5000/highscore');
+  }
+
   animate(){
     console.log("animate");
     //this.ctx.fillStyle = 'blue';
     //this.ctx.fillRect(0, 0, 40, 40);
 
-      
+
       //this.loop()
     //  const id = requestAnimationFrame(() => (this.loop(this.ctx)));
 //      const id = requestAnimationFrame(this.loop(this.ctx));
     this.loop(this.ctx)
   }
-  
+
   MoveLeft()
   {
     this.snake.dx = -this.grid;
@@ -121,6 +132,7 @@ export class AppComponent implements OnInit {
 
 
   ResetGame() {
+    console.log(this.geths());
     this.snake.x = 160;
     this.snake.y = 160;
     this.snake.cells = [];
@@ -140,20 +152,21 @@ export class AppComponent implements OnInit {
     this.ResetGame();
   }
 
+
   getRandomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
   loop(ctx: CanvasRenderingContext2D) {
-    const id = requestAnimationFrame(() => (this.loop(this.ctx)));  
-    
+    const id = requestAnimationFrame(() => (this.loop(this.ctx)));
+
     // slow game loop to 15 fps instead of 60 (60/15 = 4)
         if (++this.count < 4) {
           return;
         }
     this.count = 0;
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    
+
     // move snake by it's velocity
     this.snake.x += this.snake.dx;
     this.snake.y += this.snake.dy;
@@ -189,7 +202,7 @@ export class AppComponent implements OnInit {
       //draw snake
       let x = this.scell[i];
       let y = this.scell[i + 1];
-      
+
      ctx.fillRect(x, y, this.grid - 1, this.grid - 1);
       ctx.fillStyle = 'blue';
 
@@ -202,8 +215,8 @@ export class AppComponent implements OnInit {
         this.score += 10;
         //max=score;
         //document.getElementById('score').innerHTML = score;
-  
-        // canvas is 400x400 which is 25x25 grids 
+
+        // canvas is 400x400 which is 25x25 grids
         this.apple.x = this.getRandomInt(0, 25) * this.grid;
         this.apple.y = this.getRandomInt(0, 25) * this.grid;
       }
@@ -213,7 +226,7 @@ export class AppComponent implements OnInit {
     }
 
 
-    
+
 
   }
 
