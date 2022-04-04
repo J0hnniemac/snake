@@ -13,7 +13,8 @@ def hello_world():
 
 @app.route("/highscore")
 def gethighscore():
-    return jsonify ({"highscore":f"{highscore}"})
+    return f"{highscore}"
+    #return jsonify ({"highscore":f"{highscore}"})
 
 @app.route('/sethighscore/<userhighscore>')
 def sethighscore(userhighscore):

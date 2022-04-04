@@ -1,5 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit, HostListener } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 
 
 
@@ -8,31 +10,37 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-  @HostListener('window:keydown', ['$event'])
-  baseURL: string = "https://api.github.com/";
 
-  constructor(private http: HttpClient) {
+export class AppComponent implements OnInit {
+
+  baseURL: string = "http://172.17.0.2:5001/highscore";
+
+
+
+  constructor(private httpClient: HttpClient) {
   }
+
+
+  @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if(event.key == 'ArrowDown'){
       // Your row selection code
-      console.log("ARROW DOWN");
+      //console.log("ARROW DOWN");
       this.MoveDown();
     }
     if(event.key == 'ArrowUp'){
       // Your row selection code
-      console.log("ARROW UP");
+      //console.log("ARROW UP");
       this.MoveUp()
     }
     if(event.key == 'ArrowLeft'){
       // Your row selection code
-      console.log("ARROW Left");
+      //console.log("ARROW Left");
       this.MoveLeft();
     }
     if(event.key == 'ArrowRight'){
       // Your row selection code
-      console.log("ARROW Right");
+      //console.log("ARROW Right");
       this.MoveRight();
     }
 
@@ -42,8 +50,8 @@ export class AppComponent implements OnInit {
 
   title = 'Snake Game';
   score = 0;
-  highscore = 100;
-
+  highscore = 1;
+  //xxx = 0;
   grid = 16;
   count = 0;
   max = 0;
@@ -87,9 +95,7 @@ export class AppComponent implements OnInit {
 
   }
 
-  geths(){
-    return this.http.get<number>('http://localhost:5000/highscore');
-  }
+
 
   animate(){
     console.log("animate");
@@ -129,10 +135,25 @@ export class AppComponent implements OnInit {
     this.snake.dy = this.grid;
     this.snake.dx = 0;
   }
+  public getHighScoreFromAPI(): Observable<string> {
 
+    return this.httpClient.get<string>(this.baseURL);
+  }
+
+  sendHighScore (score :number) {
+    console.log("sendHighScore");
+    var scoreurl: string = "http://172.17.0.2:5001/sethighscore/" + score;
+    console.log(scoreurl);
+    this.httpClient.get<any>(scoreurl).subscribe();
+  }
 
   ResetGame() {
-    console.log(this.geths());
+
+    //this.highscore = this.getHighScoreFromAPI()
+
+   // this.getHighScoreFromAPI().subscribe(x=> this.highscore = +x)
+    this.getHighScoreFromAPI().subscribe(x=> this.checkHighScore(x))
+
     this.snake.x = 160;
     this.snake.y = 160;
     this.snake.cells = [];
@@ -141,14 +162,36 @@ export class AppComponent implements OnInit {
     this.snake.dy = 0;
     this.apple.x = this.getRandomInt(0, 25) * this.grid;
     this.apple.y = this.getRandomInt(0, 25) * this.grid;
-    this.score = 0;
+
     //this.document.getElementById('score').innerHTML = score;
     this.scell= [];
 
   }
+
+  checkHighScore(hs: string)
+  {
+    console.log("checkHighScore");
+    var numhs:number = +hs;
+    console.log(numhs)
+    console.log(this.highscore)
+    console.log(this.score)
+
+
+    if(numhs > this.highscore) {
+      this.highscore = numhs;
+    }
+
+    if(this.score > numhs) {
+
+      this.sendHighScore(this.score);
+      this.getHighScoreFromAPI().subscribe(x=> this.checkHighScore(x))
+    }
+    this.score = 0;
+  }
+
   GameOver() {
 
-    // SetHighScore();
+
     this.ResetGame();
   }
 
@@ -193,10 +236,10 @@ export class AppComponent implements OnInit {
       this.scell.pop();
     }
     // draw apple
-    ctx.fillStyle = '#4dacf1';
+    ctx.fillStyle = '#acf04d';
     ctx.fillRect(this.apple.x, this.apple.y, this.grid - 1, this.grid - 1);
     // draw snake one cell at a time
-    ctx.fillStyle = '#b15afe';
+    ctx.fillStyle = '#f04dac';
 
     for (let i = 0; i < this.scell.length - 2; i = i + 2) {
       //draw snake
@@ -204,7 +247,7 @@ export class AppComponent implements OnInit {
       let y = this.scell[i + 1];
 
      ctx.fillRect(x, y, this.grid - 1, this.grid - 1);
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = '#4dacf1';
 
 
 
