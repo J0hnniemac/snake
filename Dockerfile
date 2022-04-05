@@ -3,6 +3,7 @@ WORKDIR /app
 COPY ./app .
 RUN npm install
 RUN npm run build --prod
+#need to inject hostname to connect to
 
 #stage 2
 FROM python:3.8-slim-buster
@@ -14,9 +15,10 @@ COPY requirements.txt .
 COPY config.py .
 COPY fixIndexHTML.py .
 COPY snakeBackend.py .
-COPY start.sh .
-RUN chmod +x start.sh
+
+
 
 RUN pip install -r ./requirements.txt
-#ENTRYPOINT ["python", "snakeBackend.py"]
-ENTRYPOINT ["sh", "start.sh"]
+
+ENTRYPOINT ["python", "snakeBackend.py"]
+

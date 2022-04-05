@@ -12,10 +12,11 @@ import { Observable } from 'rxjs';
 })
 
 export class AppComponent implements OnInit {
-
-  baseURL: string = "http://127.0.0.1:8080/highscore";
-
-
+  basePort: string = "8080";
+  baseURL: string = "http://localhost:" + this.basePort ;
+ 
+  highScoreURL: string = this.baseURL + "/highscore";
+  sethighscoreURL :string = this.baseURL + "/sethighscore";
 
   constructor(private httpClient: HttpClient) {
   }
@@ -137,12 +138,12 @@ export class AppComponent implements OnInit {
   }
   public getHighScoreFromAPI(): Observable<string> {
 
-    return this.httpClient.get<string>(this.baseURL);
+    return this.httpClient.get<string>(this.highScoreURL);
   }
 
   sendHighScore (score :number) {
     console.log("sendHighScore");
-    var scoreurl: string = "http://127.0.0.1:8080/sethighscore/" + score;
+    var scoreurl: string = this.sethighscoreURL + score;
     console.log(scoreurl);
     this.httpClient.get<any>(scoreurl).subscribe();
   }
