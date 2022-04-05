@@ -17,3 +17,7 @@ export FLASK_APP=api/snakeapi
 flask run --host=0.0.0.0 --port=5001
 
 ##Angular
+
+
+
+#Flask with Angular based on https://github.com/wottreng/Flask-Serving-Angular

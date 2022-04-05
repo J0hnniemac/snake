@@ -1,3 +1,4 @@
 #!/bin/bash
-export FLASK_APP=api/snakeapi
-nginx && flask run --host=0.0.0.0 --port=5001 
+export FLASK_APP=snakeBackend.py
+flask run --host=127.0.0.1 --port=8080 
+
