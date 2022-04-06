@@ -15,10 +15,11 @@ COPY requirements.txt .
 COPY config.py .
 COPY fixIndexHTML.py .
 COPY snakeBackend.py .
+COPY start.sh .
 
 
 
 RUN pip install -r ./requirements.txt
 
-ENTRYPOINT ["python", "snakeBackend.py"]
+ENTRYPOINT ["sh", "start.sh"]
 

@@ -1,8 +1,10 @@
 #build image
-docker build -t hsapi .
+docker build -t snake .
 
 #run container
-docker run --rm -p 8080:80 hsapi
+docker run --rm -p 8080:80 snake
+
+docker run --rm -p 8080:8080 --env-file testenv.env snake
 
 
 #Local Running
