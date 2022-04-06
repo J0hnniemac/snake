@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
   baseURL: string = "http://localhost:" + this.basePort ;
  
   highScoreURL: string = this.baseURL + "/highscore";
-  sethighscoreURL :string = this.baseURL + "/sethighscore";
+  sethighscoreURL :string = this.baseURL + "/sethighscore/";
 
   constructor(private httpClient: HttpClient) {
   }
